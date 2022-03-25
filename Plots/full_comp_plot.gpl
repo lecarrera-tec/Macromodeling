@@ -1,0 +1,47 @@
+# Full comparative plots of two transfer functions.
+# Usage : gnuplot <me> <N> <orig_data> <fitt_data> <output>
+# N is the number of ports. The System is N x N.
+# The data files are created with *data_plot* in octave.
+# The first column is the frequency, and each entry is a row mayor
+# ordering of the transfer matrix, alternating with a magnitud and 
+# angle. Here we take only the magnitude, i.e. the even entries.
+
+N = ARG1;
+file_orig = ARG2;
+file_copy = ARG3;
+file_out  = ARG4;
+
+XL = 640;
+YL = 480;
+
+SMALL = 0.05;
+LARGE = 0.1;
+GAP = 0.05;
+FIGURE = 1;
+
+SCALE = 0.75;
+
+XPLOTS = N * FIGURE * SCALE * XL;
+YPLOTS = N * FIGURE * SCALE * YL;
+
+XSIZE = SCALE * XL * (SMALL + LARGE + (N-1) * GAP) + XPLOTS;
+YSIZE = SCALE * YL * (2 * LARGE + LARGE + (N-1) * GAP) + YPLOTS;
+
+set terminal png size XSIZE,YSIZE
+set output file_out
+
+set multiplot layout N,N rowsfirst scale 1
+
+unset xtics
+unset ytics
+
+idx = 2;
+do for [i = 1:N] {
+  do for [j = 1:N] {
+    plot file_orig u ($1*1e-10):idx w l lw 4.5 lc 2 notitle, \
+           file_copy u ($1*1e-10):idx w l dt 2 lw 4.5 lc 7 notitle 
+    idx = idx + 2;
+  }
+}
+
+unset multiplot

@@ -1,0 +1,31 @@
+% How to use this library using Octave.
+
+% 1. Include the folders with the functions
+addpath('Data', 'Descriptor', 'Generic', 'Sparams');
+
+% 2. Read the data: 
+%    freqs = set of sample frequency points, of size n x 1
+%    Hs = Transfer matrices, one for each frequency point,
+%         of size NOut x NIn x n, where Nout is the number
+%         of output ports, and NIn is the number of input
+%         ports.
+
+% 3. Set the options for the Lowner Matrix construction
+opts.ktimes = -1 % Use the full data to construct the matrix
+opts.npoles = -1 % Let the algorithm choose the size
+opts.alpha  = 0.5 % "Slope" used to choose the sistem size.
+
+% 4. Call the algorithm.
+[DF, ~] = desc_lm_heur(freqs, Hs, opts);
+
+% 5. Make it stable
+DD = desc_stable_flip(DF);
+
+% 6. Reduce the error.
+DD = desc_updateC(DD, Hs, omegas);
+DF = desc_updateB(DD, Hs, omegas);
+
+% 7. Passivity enforcement
+Qc = lyapchol(DF.A, DF.B, DF.E);
+DF.Qcmt = inv(Qc');
+Sys = sp_passive_both(DF);

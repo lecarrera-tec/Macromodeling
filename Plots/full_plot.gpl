@@ -1,0 +1,49 @@
+# Full plot of transfer function.
+# Usage : gnuplot <me> <N> <data>
+# N is the number of ports. The System is N x N.
+# The data files are created with *data_plot* in octave.
+# The first column is the frequency, and each entry is a row mayor
+# ordering of the transfer matrix, alternating with a magnitud and 
+# angle. Here we take only the magnitude, i.e. the even entries.
+
+
+N = ARG1;
+file_inp = ARG2;
+file_out = ARG1.'x'.ARG1.'_full.png';
+
+#XL = 5;
+#YL = 3;
+XL = 640;
+YL = 480;
+
+SMALL = 0.05;
+LARGE = 0.1;
+GAP = 0.05;
+FIGURE = 1;
+
+SCALE = 0.75;
+
+XPLOTS = N * FIGURE * SCALE * XL;
+YPLOTS = N * FIGURE * SCALE * YL;
+
+XSIZE = SCALE * XL * (SMALL + LARGE + (N-1) * GAP) + XPLOTS;
+YSIZE = SCALE * YL * (2 * LARGE + LARGE + (N-1) * GAP) + YPLOTS;
+
+set terminal png size XSIZE,YSIZE
+set output file_out
+
+set multiplot layout N,N rowsfirst scale 1
+set key bottom left
+
+unset xtics
+unset ytics
+
+idx = 2;
+do for [i = 1:N] {
+  do for [j = 1:N] {
+    plot file_inp u ($1*1e-10):idx w l lw 4.5 lc 2 title sprintf('%d %d', i, j);
+    idx = idx + 2;
+  }
+}
+
+unset multiplot
