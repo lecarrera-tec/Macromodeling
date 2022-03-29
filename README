@@ -10,10 +10,10 @@ addpath('Data', 'Descriptor', 'Generic', 'Sparams');
 %         of output ports, and NIn is the number of input
 %         ports.
 
-% 3. Set the options for the Lowner Matrix construction
+% 3. Set the options for the Loewner Matrix construction
 opts.ktimes = -1 % Use the full data to construct the matrix
 opts.npoles = -1 % Let the algorithm choose the size
-opts.alpha  = 0.5 % "Slope" used to choose the sistem size.
+opts.alpha  = 0.5 % "Slope" used to choose the system size.
 
 % 4. Call the algorithm.
 [DF, ~] = desc_lm_heur(freqs, Hs, opts);
