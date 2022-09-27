@@ -1,4 +1,4 @@
-function DF = sp_passive_both(DF, omax=Inf, tol=1)
+function [DF, changed] = sp_passive_both(DF, omax=Inf, tol=1)
   % Usage: UDF = sp_passive_both(DF, omax=Inf, tol = 1)
   %
   % Updates DF.C matrix to construct a passive 
@@ -13,18 +13,18 @@ function DF = sp_passive_both(DF, omax=Inf, tol=1)
   %
   global fid;
   fprintf(fid, '@@ Full Global Passive for S-params @@\n');
-
-  if nargin < 3
-    tol = 1;
-  end
+  changed = false;
 
   %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
   %%%%%%%%%%%%%%%%%%%%%%% HERE %%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-  [omegas, sigmas] = sp_passv(DF, omax);
+  opts.firsttime = true;
+  opts.tol = 0;
+  [omegas, sigmas] = sp_passv(DF, omax, opts)
   counter = 0;
   fprintf(fid, '** Hamiltonian search + local enforcement **\n');
   while ~isempty(omegas) && counter < 30
+    changed = true;
     counter = counter + 1;
     fprintf(fid, 'counter = %d:', counter);
     DF = sp_lpe_list(DF, omegas, sigmas);

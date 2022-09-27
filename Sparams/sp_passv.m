@@ -49,7 +49,7 @@ else
   firsttime = false;
 end
 
-[nrows, ncols] = size(DF);
+[nrows, ncols] = size(DF.D);
 
 % 1. Computing passivity violations by Hamiltonian matrix.
 if tol > 0
@@ -66,20 +66,20 @@ if tol > 0
 
   K0 = blkdiag(DF.E, DF.E');
   L = transpose(eig(MM, K0));
-
   L = imag(L(abs(real(L)) < tol));
   L = L(L >= 0);
-  L = sort(L(L <= omax));
-  if omax == Inf
-    omax = 1.1 * L(end);
-  end
-  clear MM K0
+  L = sort(L(L <= omax))
 
   if isempty(L)
     omegas = [];
     sigmas = [];
     return
   end
+
+  if omax == Inf
+    omax = 1.1 * L(end);
+  end
+  clear MM K0
 
   % 2. Full list of omega samples.
   omegas = L;

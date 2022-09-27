@@ -50,6 +50,9 @@ function [DF, LM] = desc_lm_heur(freqs, Hs, opts)
     opts.alpha = 1;
   end
 
+  DF.Notes = '';
+
+  tic();
   reHs = real(Hs);
   imHs = imag(Hs);
   [nop, nip, nfreqs] = size(reHs);
@@ -124,6 +127,7 @@ function [DF, LM] = desc_lm_heur(freqs, Hs, opts)
     n = opts.npoles;
   else
     n = sigor(sigmas, opts.alpha);
+    plotesvd(sigmas, opts.prefix);
   end
   if opts.vfit
     n = nip * ceil(n / nip);
@@ -132,6 +136,9 @@ function [DF, LM] = desc_lm_heur(freqs, Hs, opts)
   XX = LM.X(:,1:n);
   DF.A = -YY' * LM.sL * XX; DF.B = YY' * LM.V;
   DF.C = LM.W * XX; DF.E = -YY' * LM.IL * XX;
+  tt = toc();
+  DF.Notes = [DF.Notes sprintf('Suggested system size = %d\n', n)];
+  DF.Notes = [DF.Notes sprintf('DF Total Time = %g\n', tt)];
 end % function desc_lm_heur
 
 
@@ -139,6 +146,7 @@ end % function desc_lm_heur
 % the same. If alpha < 1, bigger model.
 % If alpha > 1, smaller model (be careful).
 function idx = sigor(sigmas, alpha)
+  % plot(sigmas)
   global fid;
   sigmas = sigmas';
   n = length(sigmas);
@@ -152,3 +160,20 @@ function idx = sigor(sigmas, alpha)
   idx = idx(idx < outliers);
   idx = idx(end);
 end
+
+function plotesvd(sigmas, fname)
+global fid;
+fprintf(fid, 'Graficando valores singulares ...\n');
+fflush(fid);
+data = [vec(1:length(sigmas)), vec(log10(sigmas))];
+fname = ['~/NonReciprocal/SVDecomp/',  fname];
+savename = [fname, '.data'];
+save('-ascii', savename, 'data');
+clf;
+plot(log10(sigmas));
+fprintf(fid, '... guardando grafica.\n\n');
+fflush(fid);
+savename = [fname, '.pdf'];
+set(gcf, 'PaperSize', [10, 6])
+saveas(gcf, savename);
+end % function ploteigs

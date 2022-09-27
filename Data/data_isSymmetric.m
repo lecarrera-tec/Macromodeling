@@ -1,7 +1,11 @@
-function p = data_isSymmetric(Hs, tol = 1e-6)
+function p = data_isSymmetric(Hs, tol)
 % Usage: p = data_isSymmetric(Hs, tol = 1e-6)
 % Compute for each transfer function if it
 % is symmetric, using a relative tolerance tol
+
+if nargin == 1
+  tol = 1e-6;
+end
 
 p = false;
 nports = size(Hs, 1);

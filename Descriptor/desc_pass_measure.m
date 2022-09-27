@@ -34,7 +34,8 @@ if use_hamil
   K0 = blkdiag(DF.E, DF.E');
   L = transpose(eig(MM, K0));
   L = imag(L(abs(real(L)) < 1));
-  L = sort(L(L > 0 & L < omax));
+  L = L(L >= 0);
+  L = sort(L(L <= omax));
 
   clear SS RR TT M11 M21 TT M12 M22 MM K0
 end

@@ -1,0 +1,7 @@
+aaa_fitting: fit a rational function
+aaa_realfit: real version of rational fitting.
+aaa_eval_at: eval fitted function
+aaa_full:    compute the derivative of a sampled function.
+             The function could be multiport. It computes
+             the matrix D, if desired. It could work with
+             real or complex models.

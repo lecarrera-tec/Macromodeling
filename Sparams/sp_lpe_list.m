@@ -16,7 +16,7 @@ if nargin < 4
   delta = 5e-12;
 end
 
-ssize = (DF.A, 1);
+ssize = size(DF.A, 1);
 [nports, ncols] = size(DF.D);
 assert(nports == ncols);
 PhiDF = DF;
